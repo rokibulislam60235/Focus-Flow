@@ -1,4 +1,4 @@
-const {readData, writeData} = require("../utilis/fileHandler");
+const {readData, writeData} = require("../utils/fileHandler");
 
 const getAllTasks = async () => {
     const data = await readData();

@@ -1,3 +1,5 @@
+const asyncHandler = require("../middleware/asyncHandler");
+
 const {
     getAllTasks,
     addTask,
@@ -5,87 +7,66 @@ const {
     deleteTask,
 } = require("../services/taskService");
 
-const getTasks = async (req, res) => {
-    try {
-        const tasks = await getAllTasks();
-        res.status(200).json(tasks);
-    } catch (error) {
-        res.status(500).json({ message: "Failed to fetch tasks" });
-    }
-};
+const getTasks = asyncHandler(async (req, res) => {
+    const tasks = await getAllTasks();
 
-const createTask = async (req, res) => {
-    try {
-        const { title, priority } = req.body;
+    res.status(200).json(tasks);
+});
 
-        if (!title || !priority) {
-            return res.status(400).json({
-                message: "Title and priority are required",
-            });
-        }
+const createTask = asyncHandler(async (req, res) => {
+    const { title, priority } = req.body;
 
-        const validPriorities = ["low", "medium", "high"];
-
-        if (!validPriorities.includes(priority.toLowerCase())) {
-            return res.status(400).json({
-                message: "Priority must be low, medium, or high",
-            });
-        }
-
-        const task = await addTask({
-            title,
-            priority: priority.toLowerCase(),
-        });
-
-        res.status(201).json(task);
-    } catch (error) {
-        res.status(500).json({
-            message: "Failed to create task",
+    if (!title || !priority) {
+        return res.status(400).json({
+            message: "Title and priority are required",
         });
     }
-};
 
-const editTask = async (req, res) => {
-    try {
-        const id = Number(req.params.id);
+    const validPriorities = ["low", "medium", "high"];
 
-        const updatedTask = await updateTask(id, req.body);
-
-        if (!updatedTask) {
-            return res.status(404).json({
-                message: "Task not found",
-            });
-        }
-
-        res.status(200).json(updatedTask);
-    } catch (error) {
-        res.status(500).json({
-            message: "Failed to update task",
+    if (!validPriorities.includes(priority.toLowerCase())) {
+        return res.status(400).json({
+            message: "Priority must be low, medium, or high",
         });
     }
-};
 
-const removeTask = async (req, res) => {
-    try {
-        const id = Number(req.params.id);
+    const task = await addTask({
+        title,
+        priority: priority.toLowerCase(),
+    });
 
-        const deleted = await deleteTask(id);
+    res.status(201).json(task);
+});
 
-        if (!deleted) {
-            return res.status(404).json({
-                message: "Task not found",
-            });
-        }
+const editTask = asyncHandler(async (req, res) => {
+    const id = Number(req.params.id);
 
-        res.status(200).json({
-            message: "Task deleted successfully",
-        });
-    } catch (error) {
-        res.status(500).json({
-            message: "Failed to delete task",
+    const updatedTask = await updateTask(id, req.body);
+
+    if (!updatedTask) {
+        return res.status(404).json({
+            message: "Task not found",
         });
     }
-};
+
+    res.status(200).json(updatedTask);
+});
+
+const removeTask = asyncHandler(async (req, res) => {
+    const id = Number(req.params.id);
+
+    const deleted = await deleteTask(id);
+
+    if (!deleted) {
+        return res.status(404).json({
+            message: "Task not found",
+        });
+    }
+
+    res.status(200).json({
+        message: "Task deleted successfully",
+    });
+});
 
 module.exports = {
     getTasks,

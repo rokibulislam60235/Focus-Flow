@@ -7,6 +7,17 @@
       "priority": "high"
     }
   ],
-  "goals": [],
-  "notes": []
+  "goals": [
+    {
+      "id": 1783701298964,
+      "achieved": false,
+      "title": "Finish Anatomy Lecture"
+    }
+  ],
+  "notes": [
+    {
+      "id": 1783703017711,
+      "content": "Study Anatomy Chapter 5"
+    }
+  ]
 }
